@@ -1,5 +1,9 @@
+#Backend Stuff
 # Virtualenvs
 .venv
+
+# Lock Files
+poetry.lock
 
 
 # Frontend Stuff
@@ -16,6 +20,7 @@ node_modules
 dist
 dist-ssr
 *.local
+
 
 # Editor directories and files
 .vscode/*
