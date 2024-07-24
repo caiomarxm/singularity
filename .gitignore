@@ -7,6 +7,9 @@ poetry.lock
 
 
 # Frontend Stuff
+# Lock Files
+package-lock.json
+
 # Logs
 logs
 *.log
