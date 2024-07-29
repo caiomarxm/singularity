@@ -54,6 +54,16 @@ class Role(SQLModel, table=True):
     squad_memberships: List["SquadMembership"] = Relationship(back_populates="role")
 
 
+class RoleCreate(SQLModel):
+    name: str
+    description: Optional[str] = None
+
+
+class RoleUpdate(SQLModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+
+
 class Permission(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(unique=True, nullable=False)
