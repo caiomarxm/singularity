@@ -10,6 +10,7 @@ def test_valid_env(monkeypatch):
     monkeypatch.setenv("SINGULARITY_DB_PORT", "5432")
     monkeypatch.setenv("SINGULARITY_DB_USER", "user")
     monkeypatch.setenv("SINGULARITY_DB_PASSWORD", "password")
+    monkeypatch.setenv("SINGULARITY_DB_NAME", "dummy_db")
 
     # Initialize settings and assert
     settings = Settings()
@@ -18,6 +19,7 @@ def test_valid_env(monkeypatch):
     assert settings.SINGULARITY_DB_PORT == 5432
     assert settings.SINGULARITY_DB_USER == "user"
     assert settings.SINGULARITY_DB_PASSWORD == "password"
+    assert settings.SINGULARITY_DB_NAME == "dummy_db"
 
 
 def test_invalid_db_target(monkeypatch):
