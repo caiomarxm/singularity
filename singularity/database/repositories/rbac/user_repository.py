@@ -3,14 +3,14 @@ from sqlmodel import Session, select
 
 from singularity.database.models.rbac import (
     User,
-    UserIn,
+    UserCreate,
     UserUpdate,
     SquadMembership,
     OrganizationMembership,
 )
 
 
-def create_user(session: Session, user_in: UserIn) -> User:
+def create_user(session: Session, user_in: UserCreate) -> User:
     statement = select(User).where(User.email == user_in.email)
     db_user = session.exec(statement=statement).first()
 
