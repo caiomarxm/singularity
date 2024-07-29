@@ -190,3 +190,8 @@ class RolePermission(SQLModel, table=True):
     # Relationships
     role: Role = Relationship(back_populates="role_permissions")
     permission: Permission = Relationship(back_populates="role_permissions")
+
+
+class RolePermissionCreate(SQLModel):
+    role_id: int
+    permission_id: int
