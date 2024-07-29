@@ -7,7 +7,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
-    SINGULARITY_DB_TARGET: Literal["postgres", "mysql", "sqlite"]
+    SINGULARITY_DB_TARGET: Literal["postgres", "mysql", "sqlite"] = "sqlite"
     SINGULARITY_DB_HOST: str
     SINGULARITY_DB_PORT: Optional[int] = None
     SINGULARITY_DB_USER: str
