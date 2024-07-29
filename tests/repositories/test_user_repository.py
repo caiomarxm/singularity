@@ -1,4 +1,4 @@
-from singularity.database.models.rbac import UserIn, UserUpdate
+from singularity.database.models.rbac import UserCreate, UserUpdate
 from singularity.database.repositories.rbac.user_repository import (
     create_user,
     read_user,
@@ -10,7 +10,7 @@ from singularity.database.repositories.rbac.user_repository import (
 
 
 def test_create_user(session):
-    user_in = UserIn(
+    user_in = UserCreate(
         username="testuser", email="test@example.com", hashed_password="hashedpassword"
     )
     user = create_user(session, user_in)
@@ -20,7 +20,7 @@ def test_create_user(session):
 
 
 def test_read_user(session):
-    user_in = UserIn(
+    user_in = UserCreate(
         username="testuser", email="test@example.com", hashed_password="hashedpassword"
     )
     user = create_user(session, user_in)
@@ -31,7 +31,7 @@ def test_read_user(session):
 
 
 def test_read_user_from_email(session):
-    user_in = UserIn(
+    user_in = UserCreate(
         username="testuser", email="test@example.com", hashed_password="hashedpassword"
     )
     create_user(session, user_in)
@@ -42,7 +42,7 @@ def test_read_user_from_email(session):
 
 
 def test_update_user(session):
-    user_in = UserIn(
+    user_in = UserCreate(
         username="testuser", email="test@example.com", hashed_password="hashedpassword"
     )
     user = create_user(session, user_in)
@@ -54,7 +54,7 @@ def test_update_user(session):
 
 
 def test_delete_user(session):
-    user_in = UserIn(
+    user_in = UserCreate(
         username="testuser", email="test@example.com", hashed_password="hashedpassword"
     )
     user = create_user(session, user_in)
@@ -67,10 +67,10 @@ def test_delete_user(session):
 
 
 def test_list_users(session):
-    user1 = UserIn(
+    user1 = UserCreate(
         username="user1", email="user1@example.com", hashed_password="hashedpassword"
     )
-    user2 = UserIn(
+    user2 = UserCreate(
         username="user2", email="user2@example.com", hashed_password="hashedpassword"
     )
     create_user(session, user1)
