@@ -2,8 +2,14 @@
 # Virtualenvs
 .venv
 
+# Cache files
+__pycache__
+
 # Lock Files
 poetry.lock
+
+# Environments
+.env
 
 
 # Frontend Stuff
