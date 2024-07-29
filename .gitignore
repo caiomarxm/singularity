@@ -11,6 +11,9 @@ poetry.lock
 # Environments
 .env
 
+# SQLite
+*.db
+
 
 # Frontend Stuff
 # Lock Files
