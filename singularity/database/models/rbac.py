@@ -104,6 +104,14 @@ class Organization(SQLModel, table=True):
     )
 
 
+class OrganizationCreate(SQLModel):
+    name: str
+
+
+class OrganizationUpdate(SQLModel):
+    name: Optional[str]
+
+
 class Squad(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str
