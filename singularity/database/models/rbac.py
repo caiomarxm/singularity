@@ -109,7 +109,7 @@ class OrganizationCreate(SQLModel):
 
 
 class OrganizationUpdate(SQLModel):
-    name: Optional[str]
+    name: Optional[str] = None
 
 
 class Squad(SQLModel, table=True):
@@ -121,6 +121,16 @@ class Squad(SQLModel, table=True):
     # Relationships
     organization: Optional[Organization] = Relationship(back_populates="squads")
     squad_memberships: List["SquadMembership"] = Relationship(back_populates="squad")
+
+
+class SquadCreate(SQLModel):
+    name: str
+    description: Optional[str] = None
+
+
+class SquadUpdate(SQLModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
 
 
 class OrganizationMembership(SQLModel, table=True):
