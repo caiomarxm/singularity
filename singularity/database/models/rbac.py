@@ -27,7 +27,7 @@ class User(SQLModel, table=True):
     squad_memberships: List["SquadMembership"] = Relationship(back_populates="user")
 
 
-class UserIn(SQLModel):
+class UserCreate(SQLModel):
     name: Optional[str] = None
     email: str
     hashed_password: str
@@ -146,6 +146,18 @@ class OrganizationMembership(SQLModel, table=True):
     user: User = Relationship(back_populates="organization_memberships")
     organization: Organization = Relationship(back_populates="organization_memberships")
     role: Optional[Role] = Relationship(back_populates="organization_memberships")
+
+
+class OrganizationMembershipCreate(SQLModel):
+    user_id: int
+    organization_id: int
+    role_id: Optional[int] = None
+
+
+class OrganizationMembershipUpdate(SQLModel):
+    user_id: Optional[int] = None
+    organization_id: Optional[int] = None
+    role_id: Optional[int] = None
 
 
 class SquadMembership(SQLModel, table=True):
