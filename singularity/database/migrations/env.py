@@ -12,7 +12,7 @@ from alembic import context
 from singularity.settings.settings import settings
 from singularity.database.engine import create_sqlite_if_not_exists
 
-import singularity.database.models.user
+import singularity.database.models.rbac
 
 if settings.SINGULARITY_DB_TARGET == "sqlite":
     create_sqlite_if_not_exists(settings=settings)
