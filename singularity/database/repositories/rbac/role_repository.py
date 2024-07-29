@@ -40,6 +40,7 @@ def update_role(
         if value is not None:
             setattr(db_role, key, value)
 
+    session.add(db_role)
     session.commit()
     session.refresh(db_role)
 

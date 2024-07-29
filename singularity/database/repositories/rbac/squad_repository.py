@@ -40,6 +40,7 @@ def update_squad(
         if value is not None:
             setattr(db_squad, key, value)
 
+    session.add(db_squad)
     session.commit()
     session.refresh(db_squad)
 

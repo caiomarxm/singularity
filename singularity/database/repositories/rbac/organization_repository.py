@@ -50,6 +50,7 @@ def update_organization(
         if value is not None:
             setattr(db_organization, key, value)
 
+    session.add(db_organization)
     session.commit()
     session.refresh(db_organization)
 

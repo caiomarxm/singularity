@@ -49,6 +49,7 @@ def update_organization_membership(
 
     db_membership.role_id = role_id
 
+    session.add(db_membership)
     session.commit()
     session.refresh(db_membership)
 

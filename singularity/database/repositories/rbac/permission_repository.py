@@ -46,6 +46,7 @@ def update_permission(
         if value is not None:
             setattr(db_permission, key, value)
 
+    session.add(db_permission)
     session.commit()
     session.refresh(db_permission)
 

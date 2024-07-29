@@ -48,6 +48,7 @@ def update_user(
         if value is not None:
             setattr(db_user, key, value)
 
+    session.add(db_user)
     session.commit()
     session.refresh(db_user)
 
