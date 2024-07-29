@@ -173,6 +173,12 @@ class SquadMembership(SQLModel, table=True):
     role: Optional[Role] = Relationship(back_populates="squad_memberships")
 
 
+class SquadMembershipCreate(SQLModel):
+    user_id: int
+    squad_id: int
+    role_id: Optional[int] = None
+
+
 class RolePermission(SQLModel, table=True):
     __tablename__ = "role_permissions"
 
