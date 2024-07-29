@@ -45,3 +45,4 @@ except ValidationError as err:
     )
     logging.error("Full stacktrace bellow:")
     logging.error(str(err.with_traceback(None)))
+    raise
