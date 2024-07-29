@@ -73,6 +73,16 @@ class Permission(SQLModel, table=True):
     role_permissions: List["RolePermission"] = Relationship(back_populates="permission")
 
 
+class PermissionCreate(SQLModel):
+    name: str
+    description: Optional[str] = None
+
+
+class PermissionUpdate(SQLModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+
+
 class Organization(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(unique=True, nullable=False)
