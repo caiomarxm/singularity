@@ -27,6 +27,20 @@ class User(SQLModel, table=True):
     squad_memberships: List["SquadMembership"] = Relationship(back_populates="user")
 
 
+class UserIn(SQLModel):
+    name: Optional[str] = None
+    email: str
+    hashed_password: str
+    is_superadmin: bool = False
+
+
+class UserUpdate(SQLModel):
+    name: Optional[str] = None
+    email: Optional[str] = None
+    hased_password: Optional[str] = None
+    is_superadmin: Optional[bool] = None
+
+
 class Role(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(unique=True, nullable=False)
@@ -34,6 +48,10 @@ class Role(SQLModel, table=True):
 
     # Relationships
     role_permissions: List["RolePermission"] = Relationship(back_populates="role")
+    organization_memberships: List["OrganizationMembership"] = Relationship(
+        back_populates="role"
+    )
+    squad_memberships: List["SquadMembership"] = Relationship(back_populates="role")
 
 
 class Permission(SQLModel, table=True):
@@ -73,7 +91,7 @@ class Squad(SQLModel, table=True):
     organization_id: Optional[int] = Field(default=None, foreign_key="organization.id")
 
     # Relationships
-    organization: Optional[Organization] = Relationship(back_populates="squad")
+    organization: Optional[Organization] = Relationship(back_populates="squads")
     squad_memberships: List["SquadMembership"] = Relationship(back_populates="squad")
 
 
