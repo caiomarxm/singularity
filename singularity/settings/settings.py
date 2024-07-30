@@ -40,6 +40,10 @@ class Settings(BaseSettings):
     JWT_EXPIRES_IN_DAYS: int
     JWT_ALGORITHM: str = "HS256"
 
+    FIRST_SUPERUSER_NAME: str
+    FIRST_SUPERUSER_EMAIL: str
+    FIRST_SUPERUSER_PASSWORD: str
+
 
 try:
     settings = Settings()
