@@ -46,6 +46,7 @@ class Role(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(unique=True, nullable=False)
     description: Optional[str] = None
+    is_predefined: bool = False
 
     # Relationships
     role_permissions: List["RolePermission"] = Relationship(back_populates="role")
@@ -206,6 +207,16 @@ class Tag(SQLModel, table=True):
     # Relationships
     taggables: List["Taggable"] = Relationship(back_populates="tag")
     user_tag_roles: List["UserTagRole"] = Relationship(back_populates="tag")
+
+
+class TagCreate(SQLModel):
+    name: str
+    description: Optional[str]
+
+
+class TagUpdate(SQLModel):
+    name: Optional[str]
+    description: Optional[str]
 
 
 class Taggable(SQLModel, table=True):
