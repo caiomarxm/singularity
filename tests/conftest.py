@@ -34,8 +34,7 @@ def user(session: Session) -> User:
 def user_with_hashed_password(session: Session) -> User:
     user_create = UserCreate(
         email="testuser@example.com",
-        hashed_password=PasswordManager.hash_password(
-            "testpassword"
-        ),  # Make sure to use the same hashing logic as in your application
+        hashed_password=PasswordManager.hash_password("testpassword", rounds=4),
     )
-    return create_user(session=session, user_in=user_create)
+    user = create_user(session=session, user_in=user_create)
+    return user
