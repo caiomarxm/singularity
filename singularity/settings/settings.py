@@ -36,6 +36,10 @@ class Settings(BaseSettings):
             case _:
                 raise ValueError("Unsupported database type")
 
+    JWT_SECRET_KEY: str
+    JWT_EXPIRES_IN_DAYS: int
+    JWT_ALGORITHM: str = "HS256"
+
 
 try:
     settings = Settings()
