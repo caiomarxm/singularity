@@ -1,4 +1,3 @@
-import pytest
 from datetime import datetime, timedelta
 from sqlmodel import Session
 
@@ -10,16 +9,7 @@ from singularity.authentication.oauth2.models import (
     OAuth2AccessTokenEncoded,
 )
 
-from singularity.database.models.rbac import User, UserCreate
-from singularity.database.repositories.rbac.user_repository import create_user
-
-
-@pytest.fixture
-def user(session: Session) -> User:
-    user_create = UserCreate(
-        email="testuser@example.com", hashed_password="testhashedpassword"
-    )
-    return create_user(session=session, user_in=user_create)
+from singularity.database.models.rbac import User
 
 
 def test_create_access_token(user: User):
