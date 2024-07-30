@@ -25,6 +25,7 @@ class User(SQLModel, table=True):
         back_populates="user"
     )
     squad_memberships: List["SquadMembership"] = Relationship(back_populates="user")
+    user_tag_roles: List["UserTagRole"] = Relationship(back_populates="user")
 
 
 class UserCreate(SQLModel):
@@ -195,3 +196,34 @@ class RolePermission(SQLModel, table=True):
 class RolePermissionCreate(SQLModel):
     role_id: int
     permission_id: int
+
+
+class Tag(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str = Field(unique=True, nullable=False, max_length=50)
+    description: Optional[str] = None
+
+    # Relationships
+    taggables: List["Taggable"] = Relationship(back_populates="tag")
+    user_tag_roles: List["UserTagRole"] = Relationship(back_populates="tag")
+
+
+class Taggable(SQLModel, table=True):
+    tag_id: int = Field(default=None, foreign_key="tag.id", primary_key=True)
+    taggable_id: int = Field(default=None, primary_key=True)
+    taggable_type: str = Field(default=None, max_length=50, primary_key=True)
+
+    # Relationships
+    tag: Tag = Relationship(back_populates="taggables")
+
+
+class UserTagRole(SQLModel, table=True):
+    __tablename__ = "user_tag_role"
+    user_id: int = Field(default=None, foreign_key="user.id", primary_key=True)
+    tag_id: int = Field(default=None, foreign_key="tag.id", primary_key=True)
+    role_id: Optional[int] = Field(default=None, foreign_key="role.id")
+
+    # Relationships
+    user: "User" = Relationship(back_populates="user_tag_roles")
+    tag: Tag = Relationship(back_populates="user_tag_roles")
+    role: Optional["Role"] = Relationship(back_populates="user_tag_roles")
