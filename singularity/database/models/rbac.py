@@ -54,6 +54,7 @@ class Role(SQLModel, table=True):
         back_populates="role"
     )
     squad_memberships: List["SquadMembership"] = Relationship(back_populates="role")
+    user_tag_roles: List["UserTagRole"] = Relationship(back_populates="role")
 
 
 class RoleCreate(SQLModel):
@@ -215,8 +216,8 @@ class TagCreate(SQLModel):
 
 
 class TagUpdate(SQLModel):
-    name: Optional[str]
-    description: Optional[str]
+    name: Optional[str] = None
+    description: Optional[str] = None
 
 
 class Taggable(SQLModel, table=True):
