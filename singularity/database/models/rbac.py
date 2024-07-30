@@ -229,6 +229,18 @@ class Taggable(SQLModel, table=True):
     tag: Tag = Relationship(back_populates="taggables")
 
 
+class TaggableCreate(SQLModel):
+    tag_id: int
+    taggable_id: int
+    taggable_type: str
+
+
+class TaggableUpdate(SQLModel):
+    tag_id: Optional[int] = None
+    taggable_id: Optional[int] = None
+    taggable_type: Optional[str] = None
+
+
 class UserTagRole(SQLModel, table=True):
     __tablename__ = "user_tag_role"
     user_id: int = Field(default=None, foreign_key="user.id", primary_key=True)
