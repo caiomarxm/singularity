@@ -251,3 +251,15 @@ class UserTagRole(SQLModel, table=True):
     user: "User" = Relationship(back_populates="user_tag_roles")
     tag: Tag = Relationship(back_populates="user_tag_roles")
     role: Optional["Role"] = Relationship(back_populates="user_tag_roles")
+
+
+class UserTagRoleCreate(SQLModel):
+    user_id: int
+    tag_id: int
+    role_id: Optional[int] = None
+
+
+class UserTagRoleUpdate(SQLModel):
+    user_id: Optional[int] = None
+    tag_id: Optional[int] = None
+    role_id: Optional[int] = None
