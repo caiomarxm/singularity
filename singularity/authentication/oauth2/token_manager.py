@@ -16,17 +16,15 @@ from singularity.database.repositories.rbac.user_repository import read_user
 class TokenManager:
     @staticmethod
     def create_access_token(
-        data: Oauth2AccessTokenContent, expires_delta: Optional[timedelta] = None
+        sub: int, email: str, expires_delta: Optional[timedelta] = None
     ) -> OAuth2AccessTokenEncoded:
-        to_encode = data.model_copy()
-
         if expires_delta:
             expire = datetime.now() + expires_delta
 
         else:
             expire = datetime.now() + timedelta(days=settings.JWT_EXPIRES_IN_DAYS)
 
-        to_encode.exp = expire
+        to_encode = Oauth2AccessTokenContent(sub=str(sub), email=email, exp=expire)
 
         encoded_jwt = jwt.encode(
             to_encode.model_dump(),
