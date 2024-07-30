@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 from sqlmodel import Session
 
 from singularity.settings.settings import settings
@@ -13,11 +13,10 @@ from singularity.database.models.rbac import User
 
 
 def test_create_access_token(user: User):
-    data = Oauth2AccessTokenContent(sub=user.id, email=user.email, exp=datetime.now())
-    token_manager = TokenManager()
-
-    access_token_encoded = token_manager.create_access_token(
-        data=data, expires_delta=timedelta(days=settings.JWT_EXPIRES_IN_DAYS)
+    access_token_encoded = TokenManager.create_access_token(
+        sub=user.id,
+        email=user.email,
+        expires_delta=timedelta(days=settings.JWT_EXPIRES_IN_DAYS),
     )
 
     assert isinstance(access_token_encoded, OAuth2AccessTokenEncoded)
@@ -26,13 +25,11 @@ def test_create_access_token(user: User):
 
 
 def test_verify_token(user: User):
-    data = Oauth2AccessTokenContent(
+    access_token_encoded = TokenManager.create_access_token(
         sub=user.id,
         email=user.email,
-        exp=datetime.now() + timedelta(days=settings.JWT_EXPIRES_IN_DAYS),
+        expires_delta=timedelta(days=settings.JWT_EXPIRES_IN_DAYS),
     )
-
-    access_token_encoded = TokenManager.create_access_token(data=data)
     token = access_token_encoded.access_token
 
     payload = TokenManager.verify_token(token)
@@ -44,17 +41,15 @@ def test_verify_token(user: User):
 
 
 def test_get_current_user(session: Session, user: User):
-    data = Oauth2AccessTokenContent(
+    access_token_encoded = TokenManager.create_access_token(
         sub=user.id,
         email=user.email,
-        exp=datetime.now() + timedelta(days=settings.JWT_EXPIRES_IN_DAYS),
+        expires_delta=timedelta(days=settings.JWT_EXPIRES_IN_DAYS),
     )
-    token_manager = TokenManager()
 
-    access_token_encoded = token_manager.create_access_token(data=data)
     token = access_token_encoded.access_token
 
-    current_user = token_manager.get_current_user(token=token, session=session)
+    current_user = TokenManager.get_current_user(token=token, session=session)
 
     assert current_user is not None
     assert isinstance(current_user, User)
