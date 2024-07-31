@@ -1,5 +1,5 @@
 from typing import List, Optional
-from sqlmodel import Session, select
+from sqlmodel import Session, select, func
 from singularity.database.models.rbac import Role, RoleCreate, RoleUpdate
 
 
@@ -63,3 +63,8 @@ def list_roles(session: Session, offset: int = 0, limit: int = 10) -> List[Role]
     statement = select(Role).offset(offset).limit(limit)
     roles = session.exec(statement).all()
     return roles
+
+
+def count_total_roles(session: Session) -> List[Role]:
+    statement = select(func.count(Role.id))
+    return session.exec(statement=statement).one()
