@@ -6,6 +6,7 @@ from singularity.database.repositories.rbac.role_repository import (
     update_role,
     delete_role,
     list_roles,
+    count_total_roles,
 )
 
 
@@ -65,3 +66,13 @@ def test_list_roles(session):
 
     roles = list_roles(session)
     assert len(roles) == 2
+
+
+def test_count_roles(session):
+    role1 = RoleCreate(name="Admin", description="Administrator role")
+    role2 = RoleCreate(name="User", description="Regular user role")
+    create_role(session, role1)
+    create_role(session, role2)
+
+    total_roles = count_total_roles(session=session)
+    assert total_roles == 2
