@@ -2,7 +2,7 @@ from sqlmodel import Session
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from singularity.database.engine import get_session
-from singularity.database.models.rbac import Role, RoleCreate, RoleUpdate, User
+from singularity.database.models.rbac import Role, RoleCreate, RoleUpdate
 from singularity.database.repositories.rbac.role_repository import (
     create_role,
     read_role,
