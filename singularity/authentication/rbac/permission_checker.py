@@ -34,25 +34,21 @@ class PermissionChecker:
         if level not in ["organization", "squad"]:
             raise ValueError("Invalid level")
 
-        membership = f"{level}_memberships"
-        field_id = f"{level}_id"
-
+        memberships = getattr(user, f"{level}_memberships", [])
         entity_membership: OrganizationMembership | SquadMembership | None = next(
-            filter(
-                lambda x: getattr(x, field_id) == entity_id,
-                getattr(user, membership),
-            )
+            (
+                membership
+                for membership in memberships
+                if getattr(membership, f"{level}_id") == entity_id
+            ),
+            None,
         )
 
-        if not entity_membership:
+        if not (entity_membership and entity_membership.role):
             return False
 
-        user_role = entity_membership.role
-
-        if not user_role:
-            return False
-
-        return any(
-            role_permission.permission.name == permission
-            for role_permission in user_role.role_permissions
-        )
+        user_role_permissions = {
+            role_permission.permission.name
+            for role_permission in entity_membership.role.role_permissions
+        }
+        return permission in user_role_permissions
