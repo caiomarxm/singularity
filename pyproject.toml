@@ -22,6 +22,16 @@ bcrypt = "^4.2.0"
 pytest = "^8.3.2"
 coverage = "^7.6.0"
 
+
+[tool.coverage.report]
+fail_under = 80
+
+
+[tool.coverage.run]
+source = ["."]
+command_line = "-m pytest"
+
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
