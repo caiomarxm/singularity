@@ -5,6 +5,7 @@ from fastapi.security import OAuth2PasswordBearer
 
 from singularity.database.engine import get_session
 from singularity.database.models.rbac import User
+
 from singularity.authentication.oauth2.token_manager import TokenManager
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
