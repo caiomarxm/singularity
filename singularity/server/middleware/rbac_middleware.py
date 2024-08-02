@@ -62,8 +62,8 @@ class RBACMiddleware(BaseHTTPMiddleware):
 
             return await call_next(request)
 
-        except HTTPException as e:
-            raise e
+        except HTTPException:
+            raise
 
         except Exception as e:
             raise HTTPException(
@@ -72,6 +72,16 @@ class RBACMiddleware(BaseHTTPMiddleware):
             )
 
     def resolve_permission(self, request: Request):
+        """
+        Resolve the required permission, level, and entity_id based on the request path and method.
+
+        Args:
+            request (Request): The FastAPI request object.
+
+        Returns:
+            Tuple[str, str, Optional[str]]: The required permission, level, and optional entity_id.
+        """
+
         path = request.url.path.lstrip("/")
         method = request.method
         path_parts = path.split("/")
@@ -82,7 +92,7 @@ class RBACMiddleware(BaseHTTPMiddleware):
         for path_part in path_parts:
             if path_part in permission_info:
                 permission_info = permission_info[path_part]
-            else:  # Dynamic part with {entity_id}
+            elif path_part != "":  # Dynamic part with {entity_id}
                 entity_id = path_part
                 entity = next(
                     filter(
@@ -91,6 +101,10 @@ class RBACMiddleware(BaseHTTPMiddleware):
                     )
                 )
                 permission_info = permission_info[entity]
+
+        # Last check to access the permissions if path doesn't end with a "/"
+        if "" in permission_info.keys():
+            permission_info = permission_info[""]
 
         if (
             "permissions" in permission_info
