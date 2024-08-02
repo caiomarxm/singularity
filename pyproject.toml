@@ -21,6 +21,7 @@ bcrypt = "^4.2.0"
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.2"
 coverage = "^7.6.0"
+pytest-asyncio = "^0.23.8"
 
 
 [tool.coverage.report]
@@ -35,3 +36,7 @@ command_line = "-m pytest"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
