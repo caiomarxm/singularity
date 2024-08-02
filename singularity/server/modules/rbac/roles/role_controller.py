@@ -12,7 +12,6 @@ from singularity.database.repositories.rbac.role_repository import (
     count_total_roles,
 )
 
-from singularity.server.core.security_deps import get_current_user
 from singularity.server.pagination.pagination_schema import (
     PaginatedResponse,
     PaginationMetadata,
@@ -21,7 +20,7 @@ from singularity.server.pagination.pagination_schema import (
 router = APIRouter()
 
 
-@router.post("/", response_model=Role, dependencies=[Depends(get_current_user)])
+@router.post("/", response_model=Role)
 def create_custom_role(
     role_in: RoleCreate,
     session: Session = Depends(get_session),
