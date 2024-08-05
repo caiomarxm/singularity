@@ -6,7 +6,7 @@ from singularity.authentication.oauth2.token_manager import TokenManager
 from singularity.authentication.rbac.permission_checker import PermissionChecker
 from singularity.database.engine import get_session
 from singularity.database.models.rbac import User
-from singularity.server.middleware.rbac_permissions import ROUTE_PERMISSION_MAPPING
+from singularity.server.middleware.rbac.rbac_permissions_mapping import RBAC_ROUTE_PERMISSION_MAPPING
 
 
 class RBACMiddleware(BaseHTTPMiddleware):
@@ -86,7 +86,7 @@ class RBACMiddleware(BaseHTTPMiddleware):
         method = request.method
         path_parts = path.split("/")
 
-        permission_info = ROUTE_PERMISSION_MAPPING
+        permission_info = RBAC_ROUTE_PERMISSION_MAPPING
         entity_id = None
 
         for path_part in path_parts:

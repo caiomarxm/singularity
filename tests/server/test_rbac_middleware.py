@@ -1,6 +1,6 @@
 import pytest
 
-from singularity.server.middleware.rbac_middleware import RBACMiddleware
+from singularity.server.middleware.rbac.rbac_middleware import RBACMiddleware
 
 
 class MockRequest:

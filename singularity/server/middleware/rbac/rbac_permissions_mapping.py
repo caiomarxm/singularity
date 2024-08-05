@@ -1,4 +1,4 @@
-ROUTE_PERMISSION_MAPPING = {
+RBAC_ROUTE_PERMISSION_MAPPING = {
     "rbac": {
         "roles": {
             "": {
