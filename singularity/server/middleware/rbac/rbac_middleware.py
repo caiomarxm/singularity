@@ -1,12 +1,15 @@
 from typing import Callable, MutableMapping, Awaitable, Any, Optional
 from fastapi import Request, Response, HTTPException, status
+from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from singularity.authentication.oauth2.token_manager import TokenManager
 from singularity.authentication.rbac.permission_checker import PermissionChecker
 from singularity.database.engine import get_session
 from singularity.database.models.rbac import User
-from singularity.server.middleware.rbac.rbac_permissions_mapping import RBAC_ROUTE_PERMISSION_MAPPING
+from singularity.server.middleware.rbac.rbac_permissions_mapping import (
+    RBAC_ROUTE_PERMISSION_MAPPING,
+)
 
 
 class RBACMiddleware(BaseHTTPMiddleware):
@@ -33,9 +36,9 @@ class RBACMiddleware(BaseHTTPMiddleware):
         authorization: str = request.headers.get("Authorization")
 
         if not authorization:
-            raise HTTPException(
+            return JSONResponse(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Authorization header missing",
+                content={"detail": "Authorization header missing"},
             )
 
         token = authorization.replace("Bearer ", "")
@@ -58,7 +61,10 @@ class RBACMiddleware(BaseHTTPMiddleware):
             if not PermissionChecker.user_has_permission(
                 user, required_permission, level, entity_id
             ):
-                raise HTTPException(status_code=403, detail="Permission denied")
+                return JSONResponse(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    content={"detail": "Permission denied"},
+                )
 
             return await call_next(request)
 
@@ -66,9 +72,9 @@ class RBACMiddleware(BaseHTTPMiddleware):
             raise
 
         except Exception as e:
-            raise HTTPException(
+            return JSONResponse(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Server error: {str(e)}",
+                content={"detail": f"Server error: {str(e)}"},
             )
 
     def resolve_permission(self, request: Request):
@@ -114,4 +120,7 @@ class RBACMiddleware(BaseHTTPMiddleware):
             level = permission_info["level"]
             return required_permission, level, entity_id
         else:
-            raise HTTPException(status_code=404, detail="Route not found")
+            return JSONResponse(
+                status_code=status.HTTP_404_NOT_FOUND,
+                content={"detail": "Route not found"},
+            )
