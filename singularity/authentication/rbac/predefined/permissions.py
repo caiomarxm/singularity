@@ -123,17 +123,19 @@ class PermissionEntityPermissions(BaseModel):
     )
 
 
-class PredefinedPermissions:
-    roles = RoleEntityPermissions()
-    permissions = PermissionEntityPermissions()
+class PredefinedPermissions(BaseModel):
+    roles: RoleEntityPermissions = RoleEntityPermissions()
+    permissions: PermissionEntityPermissions = PermissionEntityPermissions()
 
-    organization = OrganizationPermissions()
-    organization_membership = OrganizationMembershipPermissions()
+    organization: OrganizationPermissions = OrganizationPermissions()
+    organization_membership: OrganizationMembershipPermissions = (
+        OrganizationMembershipPermissions()
+    )
 
-    squad = SquadPermissions()
-    squad_membership = SquadMembershipsPermissions()
+    squad: SquadPermissions = SquadPermissions()
+    squad_membership: SquadMembershipsPermissions = SquadMembershipsPermissions()
 
-    user = UserPermissions()
+    user: UserPermissions = UserPermissions()
 
 
 PREDEFINED_PERMISSIONS = PredefinedPermissions()
