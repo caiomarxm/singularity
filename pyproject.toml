@@ -12,7 +12,6 @@ fastapi = "^0.111.1"
 alembic = "^1.13.2"
 sqlmodel = "^0.0.21"
 pydantic-settings = "^2.3.4"
-pytest-mock = "^3.14.0"
 python-jose = "^3.3.0"
 uvicorn = "^0.30.3"
 bcrypt = "^4.2.0"
@@ -22,6 +21,7 @@ bcrypt = "^4.2.0"
 pytest = "^8.3.2"
 coverage = "^7.6.0"
 pytest-asyncio = "^0.23.8"
+pytest-mock = "^3.14.0"
 
 
 [tool.coverage.report]
