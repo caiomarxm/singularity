@@ -1,4 +1,5 @@
 from sqlmodel import Session, select
+from typing import List
 
 from singularity.authentication.security.password_manager import PasswordManager
 from singularity.authentication.rbac.predefined.permissions import (
@@ -9,19 +10,22 @@ from singularity.database.repositories.rbac.user_repository import (
     create_user,
     read_user_from_email,
 )
-from singularity.settings.settings import settings
+from singularity.database.repositories.rbac.permission_repository import (
+    create_permission,
+)
 from singularity.database.models.rbac import UserCreate, Permission
+
+from singularity.settings.settings import settings
 
 
 def bootstrap_permissions(session: Session) -> None:
     # Collect all predefined permissions from the PREDEFINED_PERMISSIONS structure
     predefined_permissions = []
+    permission_names = []
     for category_name, category_permissions in PREDEFINED_PERMISSIONS.__dict__.items():
         for permission_name, permission in category_permissions.__dict__.items():
             predefined_permissions.append(permission)
-
-    # Extract permission names
-    permission_names = [permission.name for permission in predefined_permissions]
+            permission_names.append(permission_name)
 
     # Fetch existing permissions from the database
     existing_permissions = session.exec(
@@ -31,18 +35,22 @@ def bootstrap_permissions(session: Session) -> None:
     existing_permission_names = {perm.name for perm in existing_permissions}
 
     # Filter out permissions that already exist
-    permissions_to_create = [
+    permissions_to_create: List[Permission] = [
         perm
         for perm in predefined_permissions
         if perm.name not in existing_permission_names
     ]
+
     # Add new permissions to the session and commit in a batch
     if permissions_to_create:
-        session.add_all(permissions_to_create)
-        session.commit()
+        for permission in permissions_to_create:
+            try:
+                create_permission(session=session, permission_in=permission)
+            except ValueError:
+                pass
 
 
-def init_db(session: Session) -> None:
+def bootstrap_db_defaults(session: Session) -> None:
     user = read_user_from_email(
         session=session, user_email=settings.FIRST_SUPERUSER_EMAIL
     )
