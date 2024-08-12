@@ -1,5 +1,5 @@
 from typing import List, Optional
-from sqlmodel import Session, select
+from sqlmodel import Session, select, func
 from singularity.database.models.rbac import (
     Permission,
     PermissionCreate,
@@ -20,6 +20,28 @@ def create_permission(session: Session, permission_in: PermissionCreate) -> Perm
     session.refresh(db_permission)
 
     return db_permission
+
+
+def create_permissions_batch(session: Session, permissions: List[PermissionCreate]):
+    permission_names = [perm.name for perm in permissions]
+
+    existing_permissions = session.exec(
+        select(Permission).where(Permission.name.in_(permission_names))
+    ).all()
+
+    existing_permission_names = {perm.name for perm in existing_permissions}
+
+    permissions_to_create: List[Permission] = [
+        Permission(**perm.model_dump())
+        for perm in permissions
+        if perm.name not in existing_permission_names
+    ]
+
+    if permissions_to_create:
+        session.add_all(permissions_to_create)
+        session.commit()
+
+    return permissions_to_create
 
 
 def read_permission(session: Session, permission_id: int) -> Optional[Permission]:
@@ -71,3 +93,8 @@ def list_permissions(
     statement = select(Permission).offset(offset).limit(limit)
     permissions = session.exec(statement).all()
     return permissions
+
+
+def count_total_permissions(session: Session) -> List[Permission]:
+    statement = select(func.count(Permission.id))
+    return session.exec(statement=statement).one()
