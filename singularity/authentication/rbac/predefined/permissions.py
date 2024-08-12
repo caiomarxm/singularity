@@ -14,7 +14,7 @@ class UserPermissions(BaseModel):
         name="user.create", description="Can create or invite a new user"
     )
     update_user: PermissionCreate = PermissionCreate(
-        name="user.create", description="Can update an existing user"
+        name="user.update", description="Can update an existing user"
     )
     list_users: PermissionCreate = PermissionCreate(
         name="user.list",
