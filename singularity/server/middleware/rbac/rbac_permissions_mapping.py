@@ -21,6 +21,20 @@ RBAC_ROUTE_PERMISSION_MAPPING = {
                 },
             },
         },
+        "permissions": {
+            "": {
+                "level": "admin",
+                "permissions": {
+                    "GET": PREDEFINED_PERMISSIONS.permissions.view_permission,
+                },
+            },
+            "{permission_id}": {
+                "level": "admin",
+                "permissions": {
+                    "GET": PREDEFINED_PERMISSIONS.permissions.list_permissions,
+                },
+            },
+        },
     },
     # Add more routes as needed
 }
