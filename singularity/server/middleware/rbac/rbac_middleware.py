@@ -1,3 +1,4 @@
+import logging
 from typing import Callable, MutableMapping, Awaitable, Any, Optional
 from fastapi import Request, Response, HTTPException, status
 from fastapi.responses import JSONResponse
@@ -5,10 +6,15 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 from singularity.authentication.oauth2.token_manager import TokenManager
 from singularity.authentication.rbac.permission_checker import PermissionChecker
+
 from singularity.database.engine import get_session
 from singularity.database.models.rbac import User
+
 from singularity.server.middleware.rbac.rbac_permissions_mapping import (
     RBAC_ROUTE_PERMISSION_MAPPING,
+)
+from singularity.server.middleware.rbac.rbac_middleware_errors import (
+    PermissionNotFoundError,
 )
 
 
@@ -72,6 +78,8 @@ class RBACMiddleware(BaseHTTPMiddleware):
             raise
 
         except Exception as e:
+            logging.error("Error in authentication middleware")
+            logging.error(str(e.with_traceback(None)))
             return JSONResponse(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 content={"detail": f"Server error: {str(e)}"},
@@ -88,39 +96,42 @@ class RBACMiddleware(BaseHTTPMiddleware):
             Tuple[str, str, Optional[str]]: The required permission, level, and optional entity_id.
         """
 
-        path = request.url.path.lstrip("/")
-        method = request.method
-        path_parts = path.split("/")
+        try:
+            path = request.url.path.lstrip("/")
+            method = request.method
+            path_parts = path.split("/")
 
-        permission_info = RBAC_ROUTE_PERMISSION_MAPPING
-        entity_id = None
+            permission_info = RBAC_ROUTE_PERMISSION_MAPPING
+            entity_id = None
 
-        for path_part in path_parts:
-            if path_part in permission_info:
-                permission_info = permission_info[path_part]
-            elif path_part != "":  # Dynamic part with {entity_id}
-                entity_id = path_part
-                entity = next(
-                    filter(
-                        lambda key: "{" in key and "}" in key,
-                        permission_info.keys(),
+            for path_part in path_parts:
+                if path_part in permission_info:
+                    permission_info = permission_info[path_part]
+                elif path_part != "":  # Dynamic part with {entity_id}
+                    entity_id = path_part
+                    entity = next(
+                        filter(
+                            lambda key: "{" in key and "}" in key,
+                            permission_info.keys(),
+                        )
                     )
+                    permission_info = permission_info[entity]
+
+            # Last check to access the permissions if path doesn't end with a "/"
+            if "" in permission_info.keys():
+                permission_info = permission_info[""]
+
+            if (
+                "permissions" in permission_info
+                and method in permission_info["permissions"]
+            ):
+                required_permission = permission_info["permissions"][method]
+                level = permission_info["level"]
+                return required_permission, level, entity_id
+            else:
+                return JSONResponse(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    content={"detail": "Route not found"},
                 )
-                permission_info = permission_info[entity]
-
-        # Last check to access the permissions if path doesn't end with a "/"
-        if "" in permission_info.keys():
-            permission_info = permission_info[""]
-
-        if (
-            "permissions" in permission_info
-            and method in permission_info["permissions"]
-        ):
-            required_permission = permission_info["permissions"][method]
-            level = permission_info["level"]
-            return required_permission, level, entity_id
-        else:
-            return JSONResponse(
-                status_code=status.HTTP_404_NOT_FOUND,
-                content={"detail": "Route not found"},
-            )
+        except Exception as err:
+            raise PermissionNotFoundError(f"{err}")
