@@ -1,6 +1,9 @@
 import pytest
 
 from singularity.server.middleware.rbac.rbac_middleware import RBACMiddleware
+from singularity.authentication.rbac.predefined.permissions import (
+    PREDEFINED_PERMISSIONS,
+)
 
 
 class MockRequest:
@@ -13,7 +16,7 @@ def test_resolve_permission_static():
     request = MockRequest("/rbac/roles/", "GET")
     middleware = RBACMiddleware(None)
     required_permission, level, entity_id = middleware.resolve_permission(request)
-    assert required_permission == "rbac.roles.list"
+    assert required_permission == PREDEFINED_PERMISSIONS.roles.list_roles.name
     assert level == "admin"
     assert entity_id is None
 
@@ -22,7 +25,7 @@ def test_resolve_permission_static_without_slash():
     request = MockRequest("/rbac/roles", "GET")
     middleware = RBACMiddleware(None)
     required_permission, level, entity_id = middleware.resolve_permission(request)
-    assert required_permission == "rbac.roles.list"
+    assert required_permission == PREDEFINED_PERMISSIONS.roles.list_roles.name
     assert level == "admin"
     assert entity_id is None
 
@@ -31,7 +34,7 @@ def test_resolve_permission_dynamic():
     request = MockRequest("/rbac/roles/1", "PUT")
     middleware = RBACMiddleware(None)
     required_permission, level, entity_id = middleware.resolve_permission(request)
-    assert required_permission == "rbac.roles.update"
+    assert required_permission == PREDEFINED_PERMISSIONS.roles.update_custom_role.name
     assert level == "admin"
     assert entity_id == "1"
 
