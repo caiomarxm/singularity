@@ -8,7 +8,7 @@ COPY pyproject.toml poetry.lock ./
 
 RUN poetry config virtualenvs.in-project true
 
-RUN poetry install --no-dev
+RUN poetry install --only main
 
 
 FROM python:3.12-alpine
